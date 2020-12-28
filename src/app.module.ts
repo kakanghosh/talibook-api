@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { getConnectionOptions } from 'typeorm';
+import { APP_PIPE } from '@nestjs/core';
 
 async function typeORMConfig() {
   const connectionOptions = await getConnectionOptions('default');
