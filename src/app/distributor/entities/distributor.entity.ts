@@ -5,9 +5,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Shop } from '../../shop/entities/shop.entity';
 
 @Entity({ name: 'distributors' })
 export class Distributor {
@@ -20,6 +22,9 @@ export class Distributor {
   @ManyToOne(() => User, (user) => user.distributors)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Shop, (shop) => shop.distributor)
+  shops: Shop[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

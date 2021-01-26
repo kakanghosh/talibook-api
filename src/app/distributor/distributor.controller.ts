@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { DistributorService } from './services/distributor.service';
-import { CreateDistributorDto } from './dtos/create-distributor.dto';
 import { API, DISTRIBUTORS } from '../app.routes';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
+import { CreateDistributorDto } from './dtos/create-distributor.dto';
 
 @Controller(API.BASE_ROUTE)
 export class DistributorController {

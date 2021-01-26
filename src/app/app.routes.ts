@@ -2,6 +2,10 @@ export const API = {
   BASE_ROUTE: '/api/v1',
 };
 
+export const AUTH = {
+  LOGIN: 'auth/login',
+};
+
 export const USERS = {
   CREATE: '/users',
   GET_ALL: '/users',
