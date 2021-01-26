@@ -18,7 +18,7 @@ export default class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get('DATABASE_USERNAME'),
       password: this.configService.get('DATABASE_PASSWORD'),
       database: this.configService.get('DATABASE_NAME'),
-      migrations: [`${__dirname}/migrations/generated/*.js`],
+      migrations: [`dist/migrations/*.js`],
       migrationsRun: this.configService.get('DATABASE.MIGRATIONS_RUN'),
       synchronize: false,
       autoLoadEntities: true,

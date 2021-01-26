@@ -10,7 +10,7 @@ const {
   DATABASE_NAME,
 } = config.parsed;
 
-const prefix = `${__dirname}`;
+const prefix = APP_ENV === 'development' ? 'src' : 'dist';
 
 const typeORMConfig = {
   name: 'default',
@@ -26,7 +26,7 @@ const typeORMConfig = {
   migrations: [`${prefix}/**/migrations/*{.ts,.js}`],
   subscribers: [`${prefix}/**/subscriptions/**/*{.ts,.js}`],
   cli: {
-    migrationsDir: `${prefix}/src/migrations`,
+    migrationsDir: `${prefix}/migrations`,
   },
 };
 console.log(APP_ENV, typeORMConfig);

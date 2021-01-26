@@ -6,5 +6,5 @@ export default registerAs('DATABASE', () => ({
   USERNANE: process.env.DATABASE_USERNAME,
   PASSWORD: process.env.DATABASE_PASSWORD,
   NAME: process.env.DATABASE_NAME,
-  MIGRATIONS_RUN: process.env.APP_ENV === 'production',
+  MIGRATIONS_RUN: true,
 }));
