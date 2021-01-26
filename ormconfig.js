@@ -1,22 +1,33 @@
-const { HOST_NAME, PORT, USER_NAME, PASSWORD, DATABASE, APP_ENV } = process.env;
-const folder = APP_ENV || 'development' == 'development' ? 'src' : 'dist';
-module.exports = {
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const config = require('dotenv').config();
+
+const {
+  APP_ENV,
+  DATABASE_HOST,
+  DATABASE_PORT,
+  DATABASE_USERNAME,
+  DATABASE_PASSWORD,
+  DATABASE_NAME,
+} = config.parsed;
+
+const prefix = `${__dirname}`;
+
+const typeORMConfig = {
   name: 'default',
   type: 'postgres',
-  host: HOST_NAME || 'localhost',
-  port: PORT || 5432,
-  username: USER_NAME || 'postgres',
-  password: PASSWORD || 'postgres',
-  database: DATABASE || 'TALIBOOK_DB',
+  host: DATABASE_HOST,
+  port: DATABASE_PORT,
+  username: DATABASE_USERNAME,
+  password: DATABASE_PASSWORD,
+  database: DATABASE_NAME,
   synchronize: false,
   logging: false,
-  entities: [`${folder}/**/entities/*.entity{.ts,.js}`],
-  migrationsTableName: 'migration_table',
-  migrations: [`${folder}/**/migrations/**/*{.ts,.js}`],
-  subscribers: [`${folder}/**/subscribers/**/*{.ts,.js}`],
+  entities: [`${prefix}/**/entities/*.entity{.ts,.js}`],
+  migrations: [`${prefix}/**/migrations/*{.ts,.js}`],
+  subscribers: [`${prefix}/**/subscriptions/**/*{.ts,.js}`],
   cli: {
-    entitiesDir: `${folder}/**/entities`,
-    migrationsDir: `${folder}/migrations`,
-    subscribersDir: `${folder}/subscribers`,
+    migrationsDir: `${prefix}/src/migrations`,
   },
 };
+console.log(APP_ENV, typeORMConfig);
+module.exports = typeORMConfig;

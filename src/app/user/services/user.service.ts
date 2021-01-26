@@ -1,17 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HashingService } from 'src/app/hashing/services/hashing.service';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 import { User } from '../entities/user.entity';
-import { UserRepository } from '../repository/user.repository';
-import { IUserService } from './user.service.interface';
 
 @Injectable()
-export class UserService implements IUserService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UserService {
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly hashingService: HashingService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    try {
+      user.password = await this.hashingService.generateHash(user.password);
+      return this.userRepository.save(user);
+    } catch (error) {
+      return null;
+    }
   }
 
   async findAll(): Promise<User[]> {
@@ -20,6 +29,10 @@ export class UserService implements IUserService {
 
   async findOne(id: number): Promise<User> {
     return this.userRepository.findOne(id);
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ email });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
