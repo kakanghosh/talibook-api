@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { DistributorModule } from './distributor/distributor.module';
 import { HashingModule } from './hashing/hashing.module';
 import { ShopModule } from './shop/shop.module';
+import { TransactionModule } from './transaction/transaction.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
     HashingModule,
     DistributorModule,
     ShopModule,
+    TransactionModule,
   ],
 })
 export class AppModule {}

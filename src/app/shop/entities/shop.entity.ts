@@ -1,9 +1,11 @@
+import { Transaction } from '../../transaction/entities/transaction.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +22,9 @@ export class Shop {
   @ManyToOne(() => Distributor, (distributor) => distributor.shops)
   @JoinColumn({ name: 'distributor_id' })
   distributor: Distributor;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.shop)
+  transactions: Transaction[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

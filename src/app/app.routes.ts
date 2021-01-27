@@ -30,7 +30,8 @@ export const SHOPS = {
 };
 
 export const TRANSACTIONS = {
-  CREATE_TRANSACTION: `${SHOPS.GET_ONE}/transaction`,
-  GET_ALL_TRANSACTION: `${SHOPS.GET_ONE}/transaction`,
-  GET_ONE_TRANSACTION: `${SHOPS.GET_ONE}/transaction/:transactionId`,
+  CREATE_TRANSACTION: `${SHOPS.GET_ONE}/transactions`,
+  GET_ALL_TRANSACTION: `${SHOPS.GET_ONE}/transactions`,
+  GET_ONE_TRANSACTION: `${SHOPS.GET_ONE}/transactions/:transactionId`,
+  DELETE_ONE_TRANSACTION: `${SHOPS.GET_ONE}/transactions/:transactionId`,
 };
