@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/app/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -43,17 +39,15 @@ export class DistributorService {
       where: { id: id, user: user },
     });
     if (!distributor) {
-      throw new NotFoundException('Distributor not found');
+      throw new UnprocessableEntityException(`Distributor not found by ${id}`);
     }
     return distributor;
   }
 
   async deleteDistributor(user: User, id: number) {
     const distributor = await this.getDistributor(user, id);
-    if (distributor) {
-      return this.distributorRepostory.delete(distributor);
-    }
-    return null;
+    const deleteResult = await this.distributorRepostory.delete(distributor.id);
+    return deleteResult.affected > 0;
   }
 
   async getDistributorByUserAndName(user: User, name: string) {

@@ -3,12 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { DistributorService } from './services/distributor.service';
 import { API, DISTRIBUTORS } from '../app.routes';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -48,9 +51,19 @@ export class DistributorController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(DISTRIBUTORS.DELETE)
-  async deleteDistributor(@Param('id') id: number, @Req() req: Request) {
+  async deleteDistributor(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const user = req.user as User;
-    return this.distributorService.deleteDistributor(user, id);
+    const result = await this.distributorService.deleteDistributor(user, id);
+    if (!result) {
+      res.status(HttpStatus.UNPROCESSABLE_ENTITY).send();
+    } else {
+      res.send();
+    }
   }
 }
