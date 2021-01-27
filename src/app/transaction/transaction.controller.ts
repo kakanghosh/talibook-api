@@ -1,16 +1,19 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { API, TRANSACTIONS } from '../app.routes';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Distributor } from '../distributor/entities/distributor.entity';
 import { DistributorService } from '../distributor/services/distributor.service';
 import { ShopService } from '../shop/services/shop.service';
 import { User } from '../user/entities/user.entity';
@@ -61,6 +64,31 @@ export class TransactionController {
       totalPurchase,
     } = this.transactionService.calculateDepositeAndPurchase(transactions);
     return { totalDeposite, totalPurchase, transactions };
+  }
+
+  @Delete(TRANSACTIONS.DELETE_ONE_TRANSACTION)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteOneTransaction(
+    @Param('id') distributorId: number,
+    @Param('shopId') shopId: number,
+    @Param('transactionId') transactionId: number,
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const { shop } = await this.resolveDistributorAndShop(
+      request.user as User,
+      distributorId,
+      shopId,
+    );
+    const result = await this.transactionService.deleteTransaction(
+      shop,
+      transactionId,
+    );
+    if (!result) {
+      response.status(HttpStatus.UNPROCESSABLE_ENTITY).send();
+    } else {
+      response.send();
+    }
   }
 
   async resolveDistributorAndShop(

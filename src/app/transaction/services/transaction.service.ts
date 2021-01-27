@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Shop } from '../../shop/entities/shop.entity';
 import { Repository } from 'typeorm';
@@ -61,5 +61,26 @@ export class TransactionService {
       0,
     );
     return { totalDeposite, totalPurchase };
+  }
+
+  async getTransactionByShopAndID(shop: Shop, transactionId: number) {
+    const transaction = await this.transactionRepository.findOne({
+      where: { shop: shop, id: transactionId },
+    });
+    if (!transaction) {
+      throw new UnprocessableEntityException(
+        `Transaction not found by ${transactionId}`,
+      );
+    }
+    return transaction;
+  }
+
+  async deleteTransaction(shop: Shop, transactionId: number) {
+    const transaction = await this.getTransactionByShopAndID(
+      shop,
+      transactionId,
+    );
+    const result = await this.transactionRepository.delete(transaction.id);
+    return result.affected > 0;
   }
 }
