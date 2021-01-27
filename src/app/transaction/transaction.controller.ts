@@ -80,10 +80,11 @@ export class TransactionController {
       distributorId,
       shopId,
     );
-    const result = await this.transactionService.deleteTransaction(
+    const transaction = await this.transactionService.getTransactionByShopAndID(
       shop,
       transactionId,
     );
+    const result = await this.transactionService.deleteTransaction(transaction);
     if (!result) {
       response.status(HttpStatus.UNPROCESSABLE_ENTITY).send();
     } else {

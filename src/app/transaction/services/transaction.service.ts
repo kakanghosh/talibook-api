@@ -75,11 +75,7 @@ export class TransactionService {
     return transaction;
   }
 
-  async deleteTransaction(shop: Shop, transactionId: number) {
-    const transaction = await this.getTransactionByShopAndID(
-      shop,
-      transactionId,
-    );
+  async deleteTransaction(transaction: Transaction) {
     const result = await this.transactionRepository.delete(transaction.id);
     return result.affected > 0;
   }
