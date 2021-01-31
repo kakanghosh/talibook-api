@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HashingService } from 'src/app/hashing/services/hashing.service';
 import { Repository } from 'typeorm';
@@ -14,6 +14,10 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const userByEmail = await this.findOneByEmail(createUserDto.email);
+    if (userByEmail) {
+      throw new UnprocessableEntityException(`Email is taken`);
+    }
     const user = this.userRepository.create(createUserDto);
     try {
       user.password = await this.hashingService.generateHash(user.password);

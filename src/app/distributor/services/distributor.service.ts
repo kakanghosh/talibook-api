@@ -28,7 +28,7 @@ export class DistributorService {
   }
 
   async getDistributors(user: User) {
-    const distributors = this.distributorRepostory.find({
+    const distributors = await this.distributorRepostory.find({
       where: { user: user },
     });
     return distributors;

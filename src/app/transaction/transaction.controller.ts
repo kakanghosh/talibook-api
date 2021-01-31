@@ -41,10 +41,16 @@ export class TransactionController {
       distributorId,
       shopId,
     );
-    return await this.transactionService.createTransaction(
+    const transaction = await this.transactionService.createTransaction(
       shop,
       createTransactionDto,
     );
+    const transactions = await this.transactionService.findAllTransaction(shop);
+    const {
+      totalDeposite,
+      totalPurchase,
+    } = this.transactionService.calculateDepositeAndPurchase(transactions);
+    return { totalDeposite, totalPurchase, transaction };
   }
 
   @Get(TRANSACTIONS.GET_ALL_TRANSACTION)
