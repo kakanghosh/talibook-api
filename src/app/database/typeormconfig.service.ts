@@ -22,8 +22,11 @@ export default class TypeOrmConfigService implements TypeOrmOptionsFactory {
       migrationsRun: this.configService.get('DATABASE.MIGRATIONS_RUN'),
       synchronize: false,
       autoLoadEntities: true,
+      ssl: true,
       extra: {
-        ssl: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       },
     };
   }
