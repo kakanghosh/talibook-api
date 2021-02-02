@@ -4,13 +4,10 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 
 @Injectable()
 export default class TypeOrmConfigService implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  commonConfig: TypeOrmModuleOptions;
 
-  createTypeOrmOptions(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    connectionName?: string,
-  ): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
-    return {
+  constructor(private readonly configService: ConfigService) {
+    this.commonConfig = {
       name: 'default',
       type: 'postgres',
       host: this.configService.get('DATABASE_HOST'),
@@ -22,6 +19,29 @@ export default class TypeOrmConfigService implements TypeOrmOptionsFactory {
       migrationsRun: this.configService.get('DATABASE.MIGRATIONS_RUN'),
       synchronize: false,
       autoLoadEntities: true,
+    };
+  }
+
+  createTypeOrmOptions(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    connectionName?: string,
+  ): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
+    if (this.configService.get('APP.ENV') === 'production') {
+      return this.getProductionSettings();
+    } else {
+      return this.getDevelopmentSettings();
+    }
+  }
+
+  private getDevelopmentSettings() {
+    return {
+      ...this.commonConfig,
+    };
+  }
+
+  private getProductionSettings() {
+    return {
+      ...this.commonConfig,
       ssl: true,
       extra: {
         ssl: {
