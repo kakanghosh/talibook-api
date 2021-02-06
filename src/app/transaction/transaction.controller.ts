@@ -73,7 +73,6 @@ export class TransactionController {
   }
 
   @Delete(TRANSACTIONS.DELETE_ONE_TRANSACTION)
-  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteOneTransaction(
     @Param('id') distributorId: number,
     @Param('shopId') shopId: number,
@@ -94,7 +93,14 @@ export class TransactionController {
     if (!result) {
       response.status(HttpStatus.UNPROCESSABLE_ENTITY).send();
     } else {
-      response.send();
+      const transactions = await this.transactionService.findAllTransaction(
+        shop,
+      );
+      const {
+        totalDeposite,
+        totalPurchase,
+      } = this.transactionService.calculateDepositeAndPurchase(transactions);
+      response.send({ totalPurchase, totalDeposite });
     }
   }
 
