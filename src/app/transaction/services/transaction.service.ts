@@ -37,7 +37,7 @@ export class TransactionService {
     endDate: Date,
   ) {
     const transactions = await this.transactionRepository.find({
-      where: { shop: shop, createdAt: Between(startDate, endDate) },
+      where: { shop: shop, transactionDate: Between(startDate, endDate) },
       order: {
         createdAt: 'DESC',
       },

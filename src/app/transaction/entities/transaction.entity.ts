@@ -29,6 +29,9 @@ export class Transaction {
   @Column()
   amount: number;
 
+  @CreateDateColumn({ name: 'transaction_date' })
+  transactionDate: Date;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

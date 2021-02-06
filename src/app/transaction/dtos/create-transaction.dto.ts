@@ -1,5 +1,11 @@
 import { TransformationType } from 'class-transformer/enums';
-import { IsEnum, IsNumber, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  Min,
+  IsOptional,
+} from 'class-validator';
 import { TransactionType } from '../entities/transaction.entity';
 
 export class CreateTransactionDto {
@@ -9,4 +15,11 @@ export class CreateTransactionDto {
 
   @IsEnum(TransformationType)
   type: TransactionType;
+
+  @IsDateString()
+  @IsOptional()
+  transactionDate?: Date;
+
+  @IsNumber()
+  timeZoneOffset: number;
 }

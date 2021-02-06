@@ -45,7 +45,23 @@ export class TransactionController {
       shop,
       createTransactionDto,
     );
-    const transactions = await this.transactionService.findAllTransaction(shop);
+    let transactions = [];
+    if (createTransactionDto.transactionDate) {
+      const date = new Date(createTransactionDto.transactionDate);
+      const { startDate, endDate } = getDateRangeFromMonthYearAndOffset(
+        date.getMonth() + 1,
+        date.getFullYear(),
+        createTransactionDto.timeZoneOffset,
+      );
+      transactions = await this.transactionService.findAllTransactionFilterByDate(
+        shop,
+        startDate,
+        endDate,
+      );
+    } else {
+      transactions = await this.transactionService.findAllTransaction(shop);
+    }
+
     const {
       totalDeposite,
       totalPurchase,
