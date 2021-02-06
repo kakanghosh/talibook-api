@@ -110,6 +110,9 @@ export class TransactionController {
     @Param('id') distributorId: number,
     @Param('shopId') shopId: number,
     @Param('transactionId') transactionId: number,
+    @Query('month') month: number,
+    @Query('year') year: number,
+    @Query('timeZoneOffset') timeZoneOffset: number,
     @Req() request: Request,
     @Res() response: Response,
   ) {
@@ -126,9 +129,21 @@ export class TransactionController {
     if (!result) {
       response.status(HttpStatus.UNPROCESSABLE_ENTITY).send();
     } else {
-      const transactions = await this.transactionService.findAllTransaction(
-        shop,
-      );
+      let transactions = [];
+      if (month && year && timeZoneOffset) {
+        const { startDate, endDate } = getDateRangeFromMonthYearAndOffset(
+          month,
+          year,
+          timeZoneOffset,
+        );
+        transactions = await this.transactionService.findAllTransactionFilterByDate(
+          shop,
+          startDate,
+          endDate,
+        );
+      } else {
+        transactions = await this.transactionService.findAllTransaction(shop);
+      }
       const {
         totalDeposite,
         totalPurchase,
