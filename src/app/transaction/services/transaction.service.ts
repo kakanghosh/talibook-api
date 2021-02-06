@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Shop } from '../../shop/entities/shop.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Transaction, TransactionType } from '../entities/transaction.entity';
 import { CreateTransactionDto } from '../dtos/create-transaction.dto';
 
@@ -24,6 +24,20 @@ export class TransactionService {
   async findAllTransaction(shop: Shop) {
     const transactions = await this.transactionRepository.find({
       where: { shop: shop },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+    return transactions;
+  }
+
+  async findAllTransactionFilterByDate(
+    shop: Shop,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    const transactions = await this.transactionRepository.find({
+      where: { shop: shop, createdAt: Between(startDate, endDate) },
       order: {
         createdAt: 'DESC',
       },

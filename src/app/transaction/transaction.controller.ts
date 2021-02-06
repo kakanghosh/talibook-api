@@ -3,10 +3,10 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -57,6 +57,9 @@ export class TransactionController {
   async getAllTransaction(
     @Param('id') distributorId: number,
     @Param('shopId') shopId: number,
+    @Query('month') month: number,
+    @Query('year') year: number,
+    @Query('timeZoneOffset') timeZoneOffset: number,
     @Req() request: Request,
   ) {
     const { shop } = await this.resolveDistributorAndShop(
@@ -64,7 +67,21 @@ export class TransactionController {
       distributorId,
       shopId,
     );
-    const transactions = await this.transactionService.findAllTransaction(shop);
+    let transactions = [];
+    if (month && year && timeZoneOffset) {
+      const { startDate, endDate } = getDateRangeFromMonthYearAndOffset(
+        month,
+        year,
+        timeZoneOffset,
+      );
+      transactions = await this.transactionService.findAllTransactionFilterByDate(
+        shop,
+        startDate,
+        endDate,
+      );
+    } else {
+      transactions = await this.transactionService.findAllTransaction(shop);
+    }
     const {
       totalDeposite,
       totalPurchase,
@@ -119,4 +136,16 @@ export class TransactionController {
     );
     return { distributor, shop };
   }
+}
+
+function getDateRangeFromMonthYearAndOffset(
+  month: number,
+  year: number,
+  timeZoneOffset: number,
+) {
+  const startDate = new Date(year, month - 1, 1);
+  startDate.setHours(startDate.getHours() + timeZoneOffset / 60);
+  const endDate = new Date(year, month, 0, 23, 59, 59);
+  endDate.setHours(endDate.getHours() + timeZoneOffset / 60);
+  return { startDate, endDate };
 }
